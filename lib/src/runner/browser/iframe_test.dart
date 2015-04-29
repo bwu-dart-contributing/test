@@ -12,16 +12,19 @@ import '../../backend/suite.dart';
 import '../../backend/test.dart';
 import '../../util/multi_channel.dart';
 import '../../util/remote_exception.dart';
+import '../../util/stack_trace_mapper.dart';
 
 /// A test in a running iframe.
 class IframeTest implements Test {
   final String name;
   final Metadata metadata;
+  final StackTraceMapper _mapper;
 
   /// The channel used to communicate with the test's [IframeListener].
   final MultiChannel _channel;
 
-  IframeTest(this.name, this.metadata, this._channel);
+  IframeTest(this.name, this.metadata, this._channel, {StackTraceMapper mapper})
+      : _mapper = mapper;
 
   LiveTest load(Suite suite) {
     var controller;
@@ -38,7 +41,11 @@ class IframeTest implements Test {
       testChannel.stream.listen((message) {
         if (message['type'] == 'error') {
           var asyncError = RemoteException.deserialize(message['error']);
-          controller.addError(asyncError.error, asyncError.stackTrace);
+
+          var stackTrace = asyncError.stackTrace;
+          if (_mapper != null) stackTrace = _mapper.mapStackTrace(stackTrace);
+
+          controller.addError(asyncError.error, stackTrace);
         } else if (message['type'] == 'state-change') {
           controller.setState(
               new State(

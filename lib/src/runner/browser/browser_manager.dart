@@ -14,6 +14,7 @@ import '../../backend/suite.dart';
 import '../../backend/test_platform.dart';
 import '../../util/multi_channel.dart';
 import '../../util/remote_exception.dart';
+import '../../util/stack_trace_mapper.dart';
 import '../../utils.dart';
 import '../load_exception.dart';
 import 'iframe_test.dart';
@@ -43,7 +44,8 @@ class BrowserManager {
   /// [url] should be an HTML page with a reference to the JS-compiled test
   /// suite. [path] is the path of the original test suite file, which is used
   /// for reporting. [metadata] is the parsed metadata for the test suite.
-  Future<Suite> loadSuite(String path, Uri url, Metadata metadata) {
+  Future<Suite> loadSuite(String path, Uri url, Metadata metadata,
+      {StackTraceMapper mapper}) {
     url = url.replace(fragment: Uri.encodeFull(JSON.encode({
       "metadata": metadata.serialize(),
       "browser": browser.identifier
@@ -83,7 +85,8 @@ class BrowserManager {
       return new Suite(response["tests"].map((test) {
         var testMetadata = new Metadata.deserialize(test['metadata']);
         var testChannel = suiteChannel.virtualChannel(test['channel']);
-        return new IframeTest(test['name'], testMetadata, testChannel);
+        return new IframeTest(test['name'], testMetadata, testChannel,
+            mapper: mapper);
       }), metadata: metadata, path: path);
     });
   }

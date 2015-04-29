@@ -5,6 +5,7 @@
 library test.util.io;
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
 
@@ -98,6 +99,18 @@ Future withTempDir(Future fn(String path)) {
     var tempDir = createTempDir();
     return new Future.sync(() => fn(tempDir))
         .whenComplete(() => new Directory(tempDir).deleteSync(recursive: true));
+  });
+}
+
+Future<String> readUrlAsString(Uri url) {
+  if (url.scheme != 'http') return new File(p.fromUri(url)).readAsString();
+
+  var client = new HttpClient();
+  return client.getUrl(url).then((request) => request.close())
+      .then((response) {
+    if (response.statusCode == 200) return UTF8.decodeStream(response);
+    throw new HttpException(
+        "$url responded with status ${response.statusCode}.");
   });
 }
 
