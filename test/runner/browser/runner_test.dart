@@ -448,6 +448,13 @@ void main() {
     expect(result.exitCode, equals(0));
   });
 
+  test("dartifies stack traces for JS-compiled tests by default", () {
+    new File(p.join(_sandbox, "test.dart")).writeAsStringSync(_failure);
+    var result = _runTest(["-p", "chrome", "test.dart"]);
+    expect(result.stdout, contains(" main.<fn>\n"));
+    expect(result.exitCode, equals(1));
+  });
+
   test("respects top-level @Timeout declarations", () {
     new File(p.join(_sandbox, "test.dart")).writeAsStringSync('''
 @Timeout(const Duration(seconds: 0))
