@@ -129,7 +129,7 @@ class ExpandedReporter {
 
         _progressLine(_description(liveTest));
         print(indent(error.error.toString()));
-        var chain = terseChain(error.stackTrace, verboseTrace: _verboseTrace);
+        var chain = terseChain(error.stackTrace, verbose: _verboseTrace);
         print(indent(chain.toString()));
       });
 

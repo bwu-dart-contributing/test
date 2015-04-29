@@ -150,7 +150,7 @@ class CompactReporter {
 
         if (error.error is! LoadException) {
           print(indent(error.error.toString()));
-          var chain = terseChain(error.stackTrace, verboseTrace: _verboseTrace);
+          var chain = terseChain(error.stackTrace, verbose: _verboseTrace);
           print(indent(chain.toString()));
           return;
         }
