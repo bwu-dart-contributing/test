@@ -10,8 +10,6 @@ import '../utils.dart';
 void main() {
   group("supports a function with this many arguments:", () {
     test("0", () {
-      throw 'dang yo';
-
       var callbackRun = false;
       return runTestBody(() {
         expectAsync(() {
