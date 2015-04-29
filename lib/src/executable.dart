@@ -119,6 +119,8 @@ void main(List<String> args) {
   });
   _parser.addFlag("verbose-trace", negatable: false,
       help: 'Whether to emit stack traces with core library frames.');
+  _parser.addFlag("js-trace", negatable: false,
+      help: 'Whether to emit raw JavaScript stack traces for browser tests.');
   _parser.addFlag("color", defaultsTo: null,
       help: 'Whether to use terminal colors.\n(auto-detected by default)');
 

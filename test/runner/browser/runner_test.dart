@@ -450,8 +450,19 @@ void main() {
 
   test("dartifies stack traces for JS-compiled tests by default", () {
     new File(p.join(_sandbox, "test.dart")).writeAsStringSync(_failure);
-    var result = _runTest(["-p", "chrome", "test.dart"]);
+    var result = _runTest(["-p", "chrome", "--verbose-trace", "test.dart"]);
     expect(result.stdout, contains(" main.<fn>\n"));
+    expect(result.stdout, contains("package:test"));
+    expect(result.stdout, contains("dart:async/zone.dart"));
+    expect(result.exitCode, equals(1));
+  });
+
+  test("doesn't dartify stack traces for JS-compiled tests with --js-trace", () {
+    new File(p.join(_sandbox, "test.dart")).writeAsStringSync(_failure);
+    var result = _runTest(["-p", "chrome", "--verbose-trace", "test.dart"]);
+    expect(result.stdout, contains(" main.<fn>\n"));
+    expect(result.stdout, contains("package:test"));
+    expect(result.stdout, contains("dart:async/zone.dart"));
     expect(result.exitCode, equals(1));
   });
 
