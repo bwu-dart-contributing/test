@@ -297,6 +297,9 @@ void main() {
         print('"pub serve" is compiling $path...');
       });
 
+      // Get the source map here for two reasons. We want to verify that the
+      // server's dart2js compiler is running on the Dart code, and also
+      // load the StackTraceMapper.
       var mapUrl = jsUrl.replace(path: jsUrl.path + '.map');
       return _http.getUrl(mapUrl)
           .then((request) => request.close())
