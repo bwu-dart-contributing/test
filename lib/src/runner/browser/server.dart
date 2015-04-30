@@ -331,7 +331,9 @@ void main() {
         if (_jsTrace) return null;
         return UTF8.decodeStream(response).then((contents) {
           _mappers[path] = new StackTraceMapper(contents,
-              mapUrl: mapUrl, root: _root, packageRoot: _packageRoot);
+              mapUrl: mapUrl,
+              packageRoot: _pubServeUrl.resolve('packages'),
+              sdkRoot: _pubServeUrl.resolve('packages/\$sdk'));
         });
       });
     });
@@ -371,7 +373,9 @@ void main() {
         var mapPath = jsPath + '.map';
         _mappers[dartPath] = new StackTraceMapper(
             new File(mapPath).readAsStringSync(),
-            mapUrl: p.toUri(mapPath), root: _root, packageRoot: _packageRoot);
+            mapUrl: p.toUri(mapPath),
+            packageRoot: p.toUri(_packageRoot),
+            sdkRoot: p.toUri(sdkDir));
       });
     });
   }

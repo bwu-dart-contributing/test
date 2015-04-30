@@ -4,22 +4,18 @@
 
 library test.util.stack_trace_mapper;
 
-import 'package:path/path.dart' as p;
 import 'package:source_map_stack_trace/source_map_stack_trace.dart' as mapper;
 import 'package:source_maps/source_maps.dart';
-
-import 'io.dart';
-
-final _sdkRoot = p.toUri(sdkDir);
 
 class StackTraceMapper {
   final Mapping _mapping;
   final Uri _packageRoot;
+  final Uri _sdkRoot;
 
-  StackTraceMapper(String contents, {Uri mapUrl, String root,
-          String packageRoot})
+  StackTraceMapper(String contents, {Uri mapUrl, Uri packageRoot, Uri sdkRoot})
     : _mapping = parse(contents, mapUrl: mapUrl),
-      _packageRoot= p.toUri(packageRootFor(root, packageRoot));
+      _packageRoot = packageRoot,
+      _sdkRoot = sdkRoot;
 
   StackTrace mapStackTrace(StackTrace trace) =>
       mapper.mapStackTrace(_mapping, trace,
