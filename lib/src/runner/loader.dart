@@ -33,6 +33,8 @@ class Loader {
   /// Whether to enable colors for Dart compilation.
   final bool _color;
 
+  final bool _jsTrace;
+
   /// Global metadata that applies to all test suites.
   final Metadata _metadata;
 
@@ -60,7 +62,8 @@ class Loader {
               root: _root,
               packageRoot: _packageRoot,
               pubServeUrl: _pubServeUrl,
-              color: _color)
+              color: _color,
+              jsTrace: _jsTrace)
           .then(_browserServerCompleter.complete)
           .catchError(_browserServerCompleter.completeError);
     }
@@ -85,12 +88,14 @@ class Loader {
   ///
   /// If the package root doesn't exist, throws an [ApplicationException].
   Loader(Iterable<TestPlatform> platforms, {String root, String packageRoot,
-        Uri pubServeUrl, bool color: false, Metadata metadata})
+        Uri pubServeUrl, bool color: false, bool jsTrace: false,
+        Metadata metadata})
       : _platforms = platforms.toList(),
         _pubServeUrl = pubServeUrl,
         _root = root == null ? p.current : root,
         _packageRoot = packageRootFor(root, packageRoot),
         _color = color,
+        _jsTrace = jsTrace,
         _metadata = metadata == null ? new Metadata() : metadata;
 
   /// Loads all test suites in [dir].

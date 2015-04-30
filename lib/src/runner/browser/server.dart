@@ -56,8 +56,9 @@ class BrowserServer {
   ///
   /// If the package root doesn't exist, throws an [ApplicationException].
   static Future<BrowserServer> start({String root, String packageRoot,
-      Uri pubServeUrl, bool color: false}) {
-    var server = new BrowserServer._(root, packageRoot, pubServeUrl, color);
+      Uri pubServeUrl, bool color: false, bool jsTrace: false}) {
+    var server = new BrowserServer._(
+        root, packageRoot, pubServeUrl, color, jsTrace);
     return server._load().then((_) => server);
   }
 
@@ -97,6 +98,8 @@ class BrowserServer {
 
   /// The package root.
   final String _packageRoot;
+
+  final bool _jsTrace;
 
   /// The URL for the `pub serve` instance to use to load tests.
   ///
@@ -138,7 +141,8 @@ class BrowserServer {
 
   final _mappers = new Map<String, StackTraceMapper>();
 
-  BrowserServer._(String root, String packageRoot, Uri pubServeUrl, bool color)
+  BrowserServer._(String root, String packageRoot, Uri pubServeUrl, bool color,
+          this._jsTrace)
       : _root = root == null ? p.current : root,
         _packageRoot = packageRootFor(root, packageRoot),
         _pubServeUrl = pubServeUrl,
@@ -324,6 +328,7 @@ void main() {
               'Make sure "pub serve" is serving the test/ directory.');
         }
 
+        if (_jsTrace) return null;
         return UTF8.decodeStream(response).then((contents) {
           _mappers[path] = new StackTraceMapper(contents,
               mapUrl: mapUrl, root: _root, packageRoot: _packageRoot);
@@ -362,6 +367,7 @@ void main() {
               headers: {'Content-Type': 'application/json'});
         });
 
+        if (_jsTrace) return;
         var mapPath = jsPath + '.map';
         _mappers[dartPath] = new StackTraceMapper(
             new File(mapPath).readAsStringSync(),

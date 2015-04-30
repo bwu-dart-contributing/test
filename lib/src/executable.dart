@@ -172,7 +172,8 @@ transformers:
       pubServeUrl: pubServeUrl,
       packageRoot: options["package-root"],
       color: color,
-      metadata: metadata);
+      metadata: metadata,
+      jsTrace: options["js-trace"]);
 
   var concurrency = _defaultConcurrency;
   if (options["concurrency"] != null) {
